@@ -5,41 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ストップウォッチ</title>
     <style>
+        /* 全体のレイアウト */
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f0f0f0;
+            background: linear-gradient(to bottom, #f8f8f8, #cce7ff); /* グラデーション背景 */
+            text-align: center;
         }
+
+        /* タイム表示のスタイル */
         #time {
-            font-size: 4em; /* 文字を大きく */
+            font-size: 8em; /* タイムの数字を大きく */
+            font-weight: bold;
+            color: #333;
+            text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* シャドウで目立たせる */
             margin: 20px;
-            color: #333; /* 文字色を変更 */
         }
+
+        /* ボタンのスタイル */
         button {
-            font-size: 2em; /* ボタンの文字を大きく */
-            margin: 10px;
+            font-size: 2em;
             padding: 20px 40px;
+            margin: 15px;
             cursor: pointer;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* ボタンの影を追加 */
+            transition: background-color 0.3s, transform 0.3s;
         }
+
         button:hover {
-            background-color: #45a049; /* ホバー時に色変更 */
+            background-color: #45a049;
+            transform: scale(1.1); /* ホバー時に少し大きく */
+        }
+
+        button:active {
+            transform: scale(1); /* クリック時に元に戻す */
+        }
+
+        /* ボタンの幅を均等に */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
     </style>
 </head>
 <body>
-    <div id="time">01:00:00</div>
-    <button onclick="start()">開始</button>
-    <button onclick="stop()">停止</button>
-    <button onclick="reset()">リセット</button>
+    <div>
+        <div id="time">01:00:00</div>
+        <div class="button-container">
+            <button onclick="start()">開始</button>
+            <button onclick="stop()">停止</button>
+            <button onclick="reset()">リセット</button>
+        </div>
+    </div>
 
     <script>
         let timer;
