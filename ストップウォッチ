@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ストップウォッチ</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        #time { font-size: 2em; margin: 20px; }
+        button { font-size: 1em; margin: 5px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div id="time">01:00:00</div>
+    <button onclick="start()">開始</button>
+    <button onclick="stop()">停止</button>
+    <button onclick="reset()">リセット</button>
+
+    <script>
+        let timer;
+        let remainingTime = 60000; // 1分 (60秒 = 60000ミリ秒)
+        let running = false;
+
+        function start() {
+            if (!running) {
+                running = true;
+                let startTime = Date.now();
+                timer = setInterval(() => {
+                    let elapsed = Date.now() - startTime;
+                    let timeLeft = Math.max(remainingTime - elapsed, 0);
+                    document.getElementById('time').innerText = formatTime(timeLeft);
+                    if (timeLeft === 0) {
+                        stop();
+                    }
+                }, 100);
+            }
+        }
+
+        function stop() {
+            clearInterval(timer);
+            running = false;
+        }
+
+        function reset() {
+            stop();
+            remainingTime = 60000;
+            document.getElementById('time').innerText = "01:00:00";
+        }
+
+        function formatTime(ms) {
+            let totalSeconds = Math.floor(ms / 1000);
+            let minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            let seconds = String(totalSeconds % 60).padStart(2, '0');
+            let milliseconds = String(Math.floor((ms % 1000) / 10)).padStart(2, '0');
+            return `${minutes}:${seconds}:${milliseconds}`;
+        }
+    </script>
+</body>
+</html>
