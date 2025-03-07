@@ -67,6 +67,9 @@
         </div>
     </div>
 
+    <!-- アラーム音 -->
+    <audio id="alarmSound" src="https://raw.githubusercontent.com/tsuda111/T-stopwhatc.index.html/main/zapsplat_household_clock_tick_tock_002_73987.mp3" preload="auto"></audio>
+
     <script>
         let timer;
         let remainingTime = 60000; // 1分 (60秒 = 60000ミリ秒)
@@ -80,6 +83,12 @@
                     let elapsed = Date.now() - startTime;
                     let timeLeft = Math.max(remainingTime - elapsed, 0);
                     document.getElementById('time').innerText = formatTime(timeLeft);
+
+                    // 残り10秒でアラーム音を鳴らす
+                    if (timeLeft <= 10000 && timeLeft > 0) {
+                        playAlarm();
+                    }
+
                     if (timeLeft === 0) {
                         stop();
                     }
@@ -104,6 +113,13 @@
             let seconds = String(totalSeconds % 60).padStart(2, '0');
             let milliseconds = String(Math.floor((ms % 1000) / 10)).padStart(2, '0');
             return `${minutes}:${seconds}:${milliseconds}`;
+        }
+
+        // アラーム音を鳴らす関数
+        function playAlarm() {
+            const alarm = document.getElementById('alarmSound');
+            alarm.currentTime = 0; // 再生を最初に戻す
+            alarm.play();
         }
     </script>
 </body>
