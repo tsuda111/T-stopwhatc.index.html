@@ -74,14 +74,19 @@
         let timer;
         let remainingTime = 60000; // 1分 (60秒 = 60000ミリ秒)
         let running = false;
+        let startTime; // 開始時刻を保持
+        let elapsedTime = 0; // 経過時間
+
+        // 音声オブジェクト
+        const alarm = document.getElementById('alarmSound');
 
         function start() {
             if (!running) {
                 running = true;
-                let startTime = Date.now();
+                startTime = Date.now() - elapsedTime; // 前回の経過時間を加算してスタート
                 timer = setInterval(() => {
-                    let elapsed = Date.now() - startTime;
-                    let timeLeft = Math.max(remainingTime - elapsed, 0);
+                    elapsedTime = Date.now() - startTime;
+                    let timeLeft = Math.max(remainingTime - elapsedTime, 0);
                     document.getElementById('time').innerText = formatTime(timeLeft);
 
                     // 残り10秒でアラーム音を鳴らす
@@ -91,6 +96,7 @@
 
                     if (timeLeft === 0) {
                         stop();
+                        stopAlarm(); // 音声を停止
                     }
                 }, 100);
             }
@@ -103,7 +109,7 @@
 
         function reset() {
             stop();
-            remainingTime = 60000;
+            elapsedTime = 0; // 経過時間をリセット
             document.getElementById('time').innerText = "01:00:00";
         }
 
@@ -117,10 +123,20 @@
 
         // アラーム音を鳴らす関数
         function playAlarm() {
-            const alarm = document.getElementById('alarmSound');
-            alarm.currentTime = 0; // 再生を最初に戻す
-            alarm.play();
+            if (alarm.paused) { // 音声が再生されていない場合のみ再生
+                alarm.currentTime = 0; // 再生を最初に戻す
+                alarm.play().catch(error => {
+                    console.error('音声再生にエラーが発生しました:', error);
+                });
+            }
+        }
+
+        // 音声を停止する関数
+        function stopAlarm() {
+            alarm.pause();
+            alarm.currentTime = 0; // 音声を停止し、最初に戻す
         }
     </script>
 </body>
 </html>
+
