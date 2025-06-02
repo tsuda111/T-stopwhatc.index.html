@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ストップウォッチ</title>
     <style>
-        /* 全体のレイアウト */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -13,20 +12,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(to bottom, #f8f8f8, #cce7ff); /* グラデーション背景 */
+            background: linear-gradient(to bottom, #f8f8f8, #cce7ff);
             text-align: center;
+            transition: background 0.5s;
         }
-
-        /* タイム表示のスタイル */
         #time {
-            font-size: 8em; /* タイムの数字を大きく */
+            font-size: 8em;
             font-weight: bold;
             color: #333;
-            text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* シャドウで目立たせる */
+            text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
             margin: 20px;
         }
-
-        /* ボタンのスタイル */
         button {
             font-size: 2em;
             padding: 20px 40px;
@@ -36,20 +32,16 @@
             color: white;
             border: none;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* ボタンの影を追加 */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s, transform 0.3s;
         }
-
         button:hover {
             background-color: #45a049;
-            transform: scale(1.1); /* ホバー時に少し大きく */
+            transform: scale(1.1);
         }
-
         button:active {
-            transform: scale(1); /* クリック時に元に戻す */
+            transform: scale(1);
         }
-
-        /* ボタンの幅を均等に */
         .button-container {
             display: flex;
             justify-content: center;
@@ -66,37 +58,40 @@
             <button onclick="reset()">リセット</button>
         </div>
     </div>
-
-    <!-- アラーム音 -->
-    <audio id="alarmSound" src="https://raw.githubusercontent.com/tsuda111/T-stopwhatc.index.html/main/zapsplat_household_clock_tick_tock_002_73987.mp3" preload="auto"></audio>
-
     <script>
         let timer;
         let remainingTime = 60000; // 1分 (60秒 = 60000ミリ秒)
         let running = false;
-        let startTime; // 開始時刻を保持
-        let elapsedTime = 0; // 経過時間
-
-        // 音声オブジェクト
-        const alarm = document.getElementById('alarmSound');
+        let startTime;
+        let elapsedTime = 0;
+        let pinked = false;
 
         function start() {
             if (!running) {
                 running = true;
-                startTime = Date.now() - elapsedTime; // 前回の経過時間を加算してスタート
+                startTime = Date.now() - elapsedTime;
                 timer = setInterval(() => {
                     elapsedTime = Date.now() - startTime;
                     let timeLeft = Math.max(remainingTime - elapsedTime, 0);
                     document.getElementById('time').innerText = formatTime(timeLeft);
 
-                    // 残り10秒でアラーム音を鳴らす
+                    // 残り10秒でbodyの色をピンクにする
                     if (timeLeft <= 10000 && timeLeft > 0) {
-                        playAlarm();
+                        if (!pinked) {
+                            document.body.style.background = "pink";
+                            pinked = true;
+                        }
+                    } else {
+                        if (pinked && timeLeft > 10000) {
+                            document.body.style.background = "linear-gradient(to bottom, #f8f8f8, #cce7ff)";
+                            pinked = false;
+                        }
                     }
 
                     if (timeLeft === 0) {
                         stop();
-                        stopAlarm(); // 音声を停止
+                        document.body.style.background = "linear-gradient(to bottom, #f8f8f8, #cce7ff)";
+                        pinked = false;
                     }
                 }, 100);
             }
@@ -109,8 +104,10 @@
 
         function reset() {
             stop();
-            elapsedTime = 0; // 経過時間をリセット
+            elapsedTime = 0;
             document.getElementById('time').innerText = "01:00:00";
+            document.body.style.background = "linear-gradient(to bottom, #f8f8f8, #cce7ff)";
+            pinked = false;
         }
 
         function formatTime(ms) {
@@ -120,9 +117,6 @@
             let milliseconds = String(Math.floor((ms % 1000) / 10)).padStart(2, '0');
             return `${minutes}:${seconds}:${milliseconds}`;
         }
-
-
     </script>
 </body>
 </html>
-
